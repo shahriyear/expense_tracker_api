@@ -12,6 +12,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable;
 
+    const STATUS = [
+        'ACTIVE' => 1,
+        'DELETE' => 9,
+    ];
     /**
      * The attributes that are mass assignable.
      *
@@ -29,4 +33,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+
+    public function getIdAttribute($value)
+    {
+        return idEncode($value);
+    }
+    public static function findId($id, $decode = true)
+    {
+        if ($decode) {
+            $id = idDecode($id);
+        }
+        return User::where('id', $id)->where('status', self::STATUS['ACTIVE'])->first();
+    }
 }

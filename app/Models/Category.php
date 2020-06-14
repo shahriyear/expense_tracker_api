@@ -41,7 +41,7 @@ class Category extends Model
         DB::beginTransaction();
         $category = new Category;
         $category->name = $data->name;
-        $category->created_by = $data->auth->id;
+        $category->created_by = idDecode($data->auth->id);
         $category->parent_id = $data->parent_id ? idDecode($data->parent_id) : 0;
 
         if (!$category->save()) {
@@ -58,7 +58,7 @@ class Category extends Model
         DB::beginTransaction();
         $category = Category::findId($data->id);
         $category->name = $data->name;
-        $category->created_by = $data->auth->id;
+        $category->created_by = idDecode($data->auth->id);
         $category->parent_id = $data->parent_id ? idDecode($data->parent_id) : 0;
 
         if (!$category->save()) {

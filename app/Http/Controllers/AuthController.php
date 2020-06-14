@@ -12,30 +12,14 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class AuthController extends Controller
 {
-    /**
-     * The request instance.
-     *
-     * @var \Illuminate\Http\Request
-     */
+
     private $request;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
     public function __construct(Request $request)
     {
         $this->request = $request;
     }
 
-    /**
-     * Create a new token.
-     * 
-     * @param  \App\User   $user
-     * @return string
-     */
     protected function jwt(User $user)
     {
         $payload = [
@@ -49,12 +33,6 @@ class AuthController extends Controller
         return $payload;
     }
 
-    /**
-     * Authenticate a user and return the token if the provided credentials are correct.
-     * 
-     * @param  \App\User   $user 
-     * @return mixed
-     */
     public function authenticate(User $user)
     {
         $this->validate($this->request, [
