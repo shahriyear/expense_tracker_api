@@ -16,7 +16,7 @@
 // });
 
 
-$router->group(['middleware' => 'jwt.auth'], function () use ($router) {
+$router->group(['prefix' => 'api/v1/', 'middleware' => 'jwt.auth'], function () use ($router) {
 
     $router->post('category', 'CategoryController@create');
     $router->patch('category/{id}', 'CategoryController@update');
