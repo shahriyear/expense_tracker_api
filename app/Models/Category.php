@@ -16,7 +16,7 @@ class Category extends Model
     protected $fillable = [
         'name', 'parent_id', 'status', 'created_by'
     ];
-    protected $hidden = [];
+    protected $hidden = ['status'];
 
     public function getIdAttribute($value)
     {
@@ -27,6 +27,27 @@ class Category extends Model
     {
         return idEncode($value);
     }
+
+    public function getCreatedByAttribute($value)
+    {
+        return idEncode($value);
+    }
+
+    public function getStatusAttribute($value)
+    {
+        return array_search($value, self::STATUS);
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return date("Y-m-d H:i:s", strtotime($value));
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return date("Y-m-d H:i:s", strtotime($value));
+    }
+
 
     public static function findId($id, $decode = true)
     {
@@ -58,7 +79,6 @@ class Category extends Model
         DB::beginTransaction();
         $category = Category::findId($data->id);
         $category->name = $data->name;
-        $category->created_by = idDecode($data->auth->id);
         $category->parent_id = $data->parent_id ? idDecode($data->parent_id) : 0;
 
         if (!$category->save()) {

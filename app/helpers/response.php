@@ -43,6 +43,17 @@ function response200($message)
     return successResponse($message, 200);
 }
 
+function response201($message)
+{
+    return successResponse($message, 201);
+}
+
+function response204($message)
+{
+    return successResponse($message, 204);
+}
+
+
 function response400($message)
 {
     return  errorResponse($message, 400);
@@ -52,6 +63,12 @@ function response401($message)
 {
     return  errorResponse($message, 401);
 }
+
+function response404($message)
+{
+    return  errorResponse($message, 404);
+}
+
 function response422($message)
 {
     return  errorResponse($message, 422);
@@ -60,6 +77,10 @@ function response422($message)
 function response500($message)
 {
     return  errorResponse($message, 500);
+}
+function response503($message)
+{
+    return  errorResponse($message, 503);
 }
 
 

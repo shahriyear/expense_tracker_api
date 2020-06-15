@@ -14,24 +14,26 @@ class JwtMiddleware
     {
 
         if (!$bearer = $request->header('Authorization')) {
-            return response401('Authorization not found!');
+            return response401('Unauthorized!');
         }
 
 
         if (!$token = $this->bearer($bearer)) {
-            return response500('An error while decoding token.');
+            return response401('Token Mismatched!');
         }
 
 
         try {
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
         } catch (ExpiredException $e) {
-            return response500('Provided token is expired.');
+            return response401('Provided token is expired.');
         } catch (Exception $e) {
-            return response500('An error while decoding token.');
+            return response401('Unauthorized!');
         }
 
-        $user = User::findId($credentials->sub);
+        if (!($user = User::findId($credentials->sub))) {
+            return response401('Unauthorized!');
+        }
 
         $request->auth = $user;
 

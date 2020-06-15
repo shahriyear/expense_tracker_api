@@ -23,6 +23,17 @@ $router->group(['middleware' => 'jwt.auth'], function () use ($router) {
     $router->get('category', 'CategoryController@all');
     $router->get('category/{id}', 'CategoryController@one');
     $router->delete('category/{id}', 'CategoryController@del');
+
+
+    $router->post('user', 'UserController@create');
+    $router->patch('user/{id}', 'UserController@update');
+    $router->get('user', 'UserController@all');
+    $router->get('user/{id}', 'UserController@one');
+    $router->delete('user/{id}', 'UserController@del');
+
+    $router->post('transaction', 'TransactionController@create');
+    $router->get('transaction', 'TransactionController@all');
+    $router->get('transaction/{id}', 'TransactionController@one');
 });
 
 
