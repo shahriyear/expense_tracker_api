@@ -18,12 +18,12 @@ $router->get('/', function () use ($router) {
 
 $router->group(['middleware' => 'jwt.auth'], function () use ($router) {
 
-    $router->post('category', ['uses' => 'CategoryController@create']);
-    $router->patch('category/{id}', ['uses' => 'CategoryController@update']);
-    $router->get('category', ['uses' => 'CategoryController@all']);
-    $router->get('category/{id}', ['uses' => 'CategoryController@one']);
-    $router->delete('category/{id}', ['uses' => 'CategoryController@del']);
+    $router->post('category', 'CategoryController@create');
+    $router->patch('category/{id}', 'CategoryController@update');
+    $router->get('category', 'CategoryController@all');
+    $router->get('category/{id}', 'CategoryController@one');
+    $router->delete('category/{id}', 'CategoryController@del');
 });
 
 
-$router->post('auth/login', ['uses' => 'AuthController@authenticate']);
+$router->post('auth/login', 'AuthController@authenticate');

@@ -12,18 +12,23 @@ class JwtMiddleware
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        $token = $request->get('token');
 
-        if (!$token) {
-            return response401('Token not provided.');
+        if (!$bearer = $request->header('Authorization')) {
+            return response401('Authorization not found!');
         }
+
+
+        if (!$token = $this->bearer($bearer)) {
+            return response500('An error while decoding token.');
+        }
+
 
         try {
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
         } catch (ExpiredException $e) {
-            return response400('Provided token is expired.');
+            return response500('Provided token is expired.');
         } catch (Exception $e) {
-            return response400('An error while decoding token.');
+            return response500('An error while decoding token.');
         }
 
         $user = User::findId($credentials->sub);
@@ -31,5 +36,13 @@ class JwtMiddleware
         $request->auth = $user;
 
         return $next($request);
+    }
+
+
+    private function bearer($bearer)
+    {
+        $bearer = preg_replace('!\s+!', ' ', ucfirst($bearer));
+        preg_match('/Bearer\s(\S+)/', $bearer, $matches);
+        return $matches[1] ?? false;
     }
 }
