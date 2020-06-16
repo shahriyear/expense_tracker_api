@@ -104,7 +104,6 @@ class Category extends Model
         DB::beginTransaction();
         $category = Category::findId($data->id);
         $category->name = $data->name;
-        $category->type = strtolower($data->type);
         $category->parent_id = $data->parent_id ? idDecode($data->parent_id) : 0;
 
         if (!$category->save()) {

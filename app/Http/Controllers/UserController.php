@@ -28,7 +28,7 @@ class UserController extends Controller
             return response500('user can not inserted!');
         }
 
-        return response201(['id' => $id, 'message' => 'user added successfully!']);
+        return response201WithTypeAndMessage('users', ['id' => $id, 'message' => 'user added successfully!']);
     }
 
     public function update(Request $request)
@@ -50,7 +50,7 @@ class UserController extends Controller
             return response500('user failed to update!');
         }
 
-        return response200(['id' => $id, 'message' => 'user updated successfully!']);
+        return response200WithTypeAndMessage('users', ['id' => $id, 'message' => 'user updated successfully!']);
     }
 
 
@@ -58,7 +58,7 @@ class UserController extends Controller
     public function all()
     {
         $users = User::getAll();
-        return response200($users);
+        return response200WithType('users', $users);
     }
 
     public function one(Request $request)
@@ -69,7 +69,7 @@ class UserController extends Controller
         if (!($user = User::getOne($request->id))) {
             return response404('user not found!');
         }
-        return response200($user);
+        return response200WithType('users', $user);
     }
 
     public function del(Request $request)
@@ -85,6 +85,6 @@ class UserController extends Controller
         if (!(User::doRemove($request->id))) {
             return response500('user failed to delete!');
         }
-        return response200(null);
+        return response200WithTypeAndMessage('users', ['message' => 'user deleted successfully!']);
     }
 }

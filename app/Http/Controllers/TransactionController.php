@@ -42,14 +42,14 @@ class TransactionController extends Controller
             return response500('transaction can not inserted!');
         }
 
-        return response201(['id' => $id, 'message' => 'transaction added successfully!']);
+        return response201WithTypeAndMessage('transactions', ['id' => $id, 'message' => 'transaction added successfully!']);
     }
 
 
     public function all()
     {
         $transactions = Transaction::getAll();
-        return response200($transactions);
+        return response200WithType('transactions', $transactions);
     }
 
     public function one(Request $request)
@@ -60,6 +60,6 @@ class TransactionController extends Controller
         if (!($transaction = Transaction::getOne($request->id))) {
             return response404('transaction not found!');
         }
-        return response200($transaction);
+        return response200WithType('transactions', $transaction);
     }
 }

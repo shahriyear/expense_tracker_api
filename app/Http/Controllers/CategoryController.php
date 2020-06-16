@@ -35,14 +35,13 @@ class CategoryController extends Controller
             return response500('category can not inserted!');
         }
 
-        return response201(['id' => $id, 'message' => 'category added successfully!']);
+        return response201WithTypeAndMessage('categories', ['id' => $id, 'message' => 'category added successfully!']);
     }
 
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name'     => 'required',
-            'type'     => 'required|alpha',
             'parent_id'  => 'nullable'
         ]);
 
@@ -58,15 +57,11 @@ class CategoryController extends Controller
             return response404('parent id could not found!');
         }
 
-        if (!Category::typeChecker($request->type)) {
-            return response404('please provide a valid type!');
-        }
-
         if (($id = Category::updateCategory($request)) === 'false') {
             return response500('category can not updated!');
         }
 
-        return response200(['id' => $id, 'message' => 'category updated successfully!']);
+        return response200WithTypeAndMessage('categories', ['id' => $id, 'message' => 'category updated successfully!']);
     }
 
 
@@ -74,7 +69,7 @@ class CategoryController extends Controller
     public function all()
     {
         $categories = Category::getAll();
-        return response200($categories);
+        return response200WithType('categories', $categories);
     }
 
     public function one(Request $request)
@@ -85,7 +80,7 @@ class CategoryController extends Controller
         if (!($category = Category::getOne($request->id))) {
             return response404('category not found!');
         }
-        return response200($category);
+        return response200WithType('categories', $category);
     }
 
     public function del(Request $request)
@@ -101,6 +96,6 @@ class CategoryController extends Controller
         if (!(Category::doRemove($request->id))) {
             return response500("category failed to delete!");
         }
-        return response200(null);
+        return response200WithTypeAndMessage('categories', ['message' => 'category deleted successfully!']);
     }
 }

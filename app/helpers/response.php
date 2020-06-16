@@ -11,7 +11,7 @@ function jsonResponse($status, $data, $statusCode)
 {
     return response()->json(array_merge([
         'status' => $status,
-    ],$data), $statusCode);
+    ], $data), $statusCode);
 }
 function jsonSuccess($data = null, $statusCode = 200)
 {
@@ -41,10 +41,22 @@ function response200($message)
 {
     return successResponse($message, 200);
 }
+function response200WithType($type, $message)
+{
+    return response200(['type' => $type, 'attributes' => $message]);
+}
+function response200WithTypeAndMessage($type, $message)
+{
+    return response200(array_merge(['type' => $type], $message));
+}
 
 function response201($message)
 {
     return successResponse($message, 201);
+}
+function response201WithTypeAndMessage($type, $message)
+{
+    return response201(array_merge(['type' => $type], $message));
 }
 
 function response204($message)
