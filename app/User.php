@@ -27,6 +27,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'name', 'email',
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -55,16 +60,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getStatusAttribute($value)
     {
         return array_search($value, self::STATUS);
-    }
-
-    public function getCreatedAtAttribute($value)
-    {
-        return date("Y-m-d H:i:s", strtotime($value));
-    }
-
-    public function getUpdatedAtAttribute($value)
-    {
-        return date("Y-m-d H:i:s", strtotime($value));
     }
 
     public static function addUser($data)

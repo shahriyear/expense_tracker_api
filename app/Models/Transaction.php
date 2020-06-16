@@ -17,6 +17,11 @@ class Transaction extends Model
         'category_id', 'amount', 'description', 'cause', 'explanation', 'created_by'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
+
     protected $hidden = ['status'];
 
     public function getIdAttribute($value)
@@ -37,11 +42,6 @@ class Transaction extends Model
     public function getStatusAttribute($value)
     {
         return array_search($value, self::STATUS);
-    }
-
-    public function getCreatedAtAttribute($value)
-    {
-        return date("Y-m-d H:i:s", strtotime($value));
     }
 
     public static function findId($id, $decode = true)

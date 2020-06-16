@@ -16,6 +16,11 @@ class Category extends Model
     protected $fillable = [
         'name', 'parent_id', 'status', 'created_by'
     ];
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
     protected $hidden = ['status'];
 
     public function getIdAttribute($value)
@@ -37,17 +42,6 @@ class Category extends Model
     {
         return array_search($value, self::STATUS);
     }
-
-    public function getCreatedAtAttribute($value)
-    {
-        return date("Y-m-d H:i:s", strtotime($value));
-    }
-
-    public function getUpdatedAtAttribute($value)
-    {
-        return date("Y-m-d H:i:s", strtotime($value));
-    }
-
 
     public static function findId($id, $decode = true)
     {
