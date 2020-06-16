@@ -16,17 +16,26 @@ class TransactionController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'category_id'     => 'required',
-            'amount'  => 'required',
+            'amount'  => 'required|numeric',
+            'month'  => 'required|numeric',
+            'year'  => 'required|numeric',
             'description'  => 'nullable',
-            'cause'  => 'required',
         ]);
 
         if ($validator->fails()) {
             return response422($validator->errors());
         }
 
-        if (isset($request->category_id) && !Transaction::checkCategoryId($request->category_id)) {
+        if (!Transaction::checkCategoryId($request->category_id)) {
             return response404('category id could not found!');
+        }
+
+        if (!Transaction::monthChecker($request->month)) {
+            return response422('month is not valid!');
+        }
+
+        if (!Transaction::yearChecker($request->year)) {
+            return response422('year is not valid!');
         }
 
         if (($id = Transaction::addTransaction($request)) === 'false') {
@@ -48,7 +57,7 @@ class TransactionController extends Controller
         if (!$request->id) {
             return response400('no id provided!');
         }
-        if(!($transaction = Transaction::getOne($request->id))){
+        if (!($transaction = Transaction::getOne($request->id))) {
             return response404('transaction not found!');
         }
         return response200($transaction);

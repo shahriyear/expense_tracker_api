@@ -14,7 +14,8 @@ class CategoryController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'     => 'required',
+            'name'     => 'required|unique:categories',
+            'type'     => 'required|alpha',
             'parent_id'  => 'nullable'
         ]);
 
@@ -22,9 +23,12 @@ class CategoryController extends Controller
             return response422($validator->errors());
         }
 
-
         if (isset($request->parent_id) && !Category::checkParentId($request->parent_id)) {
             return response404('parent id could not found!');
+        }
+
+        if (!Category::typeChecker($request->type)) {
+            return response404('please provide a valid type!');
         }
 
         if (($id = Category::addCategory($request)) === 'false') {
@@ -38,6 +42,7 @@ class CategoryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'     => 'required',
+            'type'     => 'required|alpha',
             'parent_id'  => 'nullable'
         ]);
 
@@ -51,6 +56,10 @@ class CategoryController extends Controller
 
         if (isset($request->parent_id) && !Category::checkParentId($request->parent_id)) {
             return response404('parent id could not found!');
+        }
+
+        if (!Category::typeChecker($request->type)) {
+            return response404('please provide a valid type!');
         }
 
         if (($id = Category::updateCategory($request)) === 'false') {

@@ -4,17 +4,18 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-
+use phpDocumentor\Reflection\Types\Static_;
 
 class Transaction extends Model
 {
     const STATUS = [
         'ACTIVE' => 1,
     ];
+
     protected $table = 'transactions';
     public $timestamps = false;
     protected $fillable = [
-        'category_id', 'amount', 'description', 'cause', 'explanation', 'created_by'
+        'category_id', 'month', 'year', 'amount', 'description', 'cause', 'explanation', 'created_by'
     ];
 
     protected $casts = [
@@ -52,14 +53,22 @@ class Transaction extends Model
         return Transaction::where('id', $id)->where('status', self::STATUS['ACTIVE'])->first();
     }
 
-    private static function causeChecker($cause)
+    public static function monthChecker($month)
     {
-        if ($cause === 'deposit') {
-            return intval(1);
-        } else if ($cause === 'expense') {
-            return intval(-1);
-        }
+        $m = intval($month);
+        if ($m >= 1 && $m <= 12)
+            return true;
+        return false;
     }
+
+    public static function yearChecker($year)
+    {
+        $y = intval($year);
+        if ($y >= 2020 && $y <= 2099)
+            return true;
+        return false;
+    }
+
 
     private static function explanation($data)
     {
@@ -69,12 +78,22 @@ class Transaction extends Model
 
     private static function amountSign($amount, $cause)
     {
-        return floatval(number_format($amount, 2) * self::causeChecker($cause));
+        $val = Category::causeChecker($cause);
+        if ($val === 0) {
+            return 0;
+        }
+        return floatval(number_format($amount, 2) * Category::causeChecker($cause));
     }
 
     public static function addTransaction($data)
     {;
-        if (!($amount = self::amountSign($data->amount, $data->cause))) {
+        $cause = Category::getCategoryTypeById($data->category_id);
+        if ($cause == 'false') {
+            return 'false';
+        }
+
+        $amount = self::amountSign($data->amount, $cause);
+        if ($amount === 0) {
             return 'false';
         }
 
@@ -82,7 +101,9 @@ class Transaction extends Model
         $tran = new Transaction;
         $tran->amount = $amount;
         $tran->description = $data->description;
-        $tran->cause = $data->cause;
+        $tran->cause = $cause;
+        $tran->month = $data->month;
+        $tran->year = $data->year;
         $tran->explanation = self::explanation($data);
         $tran->category_id = idDecode($data->category_id);
         $tran->created_by = idDecode($data->auth->id);

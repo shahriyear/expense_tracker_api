@@ -49,6 +49,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        return response503("service not available!"); //parent::render($request, $exception);
+        if (env('APP_DEBUG')) {
+            return parent::render($request, $exception);
+        }
+        return response503("service not available!");
     }
 }
