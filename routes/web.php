@@ -34,6 +34,7 @@ $router->group(['prefix' => 'api/v1/', 'middleware' => 'jwt.auth'], function () 
     $router->post('transaction', 'TransactionController@create');
     $router->get('transaction', 'TransactionController@all');
     $router->get('transaction/{id}', 'TransactionController@one');
+    $router->post('report', 'TransactionController@report');
 });
 
 

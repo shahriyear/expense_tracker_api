@@ -133,4 +133,87 @@ class Transaction extends Model
     {
         return Transaction::findId($id);
     }
+
+
+    private static function getUserWiseTotalAmount($month = null, $year = null, $cause = 'expense')
+    {
+
+        $q = DB::table('transactions as t')
+            ->leftJoin('users as u', 't.created_by', '=', 'u.id')
+            ->select('u.id', 'u.name', DB::raw("SUM(amount) as total"))
+            ->where('cause', $cause);
+
+        if (!is_null($month)) {
+            $q->where('month', intval($month));
+        }
+
+        if (!is_null($year)) {
+            $q->where('year', intval($year));
+        }
+
+        $q->groupBy('t.created_by')
+            ->groupBy('t.cause');
+
+        return $q->get();
+    }
+
+    private static function getTotalAmount($month = null, $year = null, $cause = 'expense')
+    {
+        $q = Transaction::where('status', 1)->where('cause', $cause);
+
+        if (!is_null($month)) {
+            $q->where('month', intval($month));
+        }
+
+        if (!is_null($year)) {
+            $q->where('year', intval($year));
+        }
+
+
+        return $q->get()->sum('amount');
+    }
+
+    private static function mapExpense($expense_total_users, $perHeadAmount)
+    {
+        $expenses = [];
+        foreach ($expense_total_users as $e) {
+            $total = abs($e->total);
+            $expense['id'] = $e->id;
+            $expense['name'] = $e->name;
+            $expense['total'] = $total;
+
+            if ($perHeadAmount > $total) {
+                $expense['have_to_pay'] = abs($total - $perHeadAmount);
+                $expense['will_get_return'] = 0;
+            } else {
+                $expense['have_to_pay'] = 0;
+                $expense['will_get_return'] = abs($total - $perHeadAmount);
+            }
+
+            $expenses[] = $expense;
+        }
+        return $expenses;
+    }
+
+    public static function report($month = null, $year = null, $cause = 'expense')
+    {
+
+        $expense_total_users = self::getUserWiseTotalAmount($month, $year, $cause);
+
+        $count = count($expense_total_users);
+        $divided_by =  $count != 0 ?: 1;
+        $total_expense = abs(self::getTotalAmount($month, $year, $cause) ?? 0);
+
+        $perHeadAmount = ($total_expense / $divided_by);
+
+
+        $expenses = self::mapExpense($expense_total_users, $perHeadAmount);
+        $data = [
+            'expenses' => $expenses,
+            'total_expense' => $total_expense,
+            'per_head_expense' => $perHeadAmount
+        ];
+
+        return $data;
+    }
 }

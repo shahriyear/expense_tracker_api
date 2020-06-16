@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Validator;
 
@@ -61,5 +62,24 @@ class TransactionController extends Controller
             return response404('transaction not found!');
         }
         return response200WithType('transactions', $transaction);
+    }
+
+
+
+
+    public function report(Request $request)
+    {
+        if (isset($request->month) && !Transaction::monthChecker($request->month)) {
+            return response422('month is not valid!');
+        }
+
+        if (isset($request->year) && !Transaction::yearChecker($request->year)) {
+            return response422('year is not valid!');
+        }
+
+        if (!($tran = Transaction::report($request->month, $request->year))) {
+            return response500('reports not found!');
+        }
+        return response200WithType('reports', $tran);
     }
 }
