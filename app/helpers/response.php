@@ -9,14 +9,13 @@ function jwtResponse($token, $statusCode = 200)
 
 function jsonResponse($status, $data, $statusCode)
 {
-    return response()->json([
+    return response()->json(array_merge([
         'status' => $status,
-        'data' => $data
-    ], $statusCode);
+    ],$data), $statusCode);
 }
 function jsonSuccess($data = null, $statusCode = 200)
 {
-    return jsonResponse(true, ['success' => $data], $statusCode);
+    return jsonResponse(true, ['data' => $data], $statusCode);
 }
 function jsonError($data = null, $statusCode = 400)
 {
