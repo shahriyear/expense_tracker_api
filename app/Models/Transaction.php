@@ -201,7 +201,7 @@ class Transaction extends Model
         $expense_total_users = self::getUserWiseTotalAmount($month, $year, $cause);
 
         $count = count($expense_total_users);
-        $divided_by =  $count != 0 ?: 1;
+        $divided_by =  $count != 0 ? $count : 1;
         $total_expense = abs(self::getTotalAmount($month, $year, $cause) ?? 0);
 
         $perHeadAmount = ($total_expense / $divided_by);
@@ -211,6 +211,7 @@ class Transaction extends Model
         $data = [
             'expenses' => $expenses,
             'total_expense' => $total_expense,
+            'divided_by' => $divided_by,
             'per_head_expense' => $perHeadAmount
         ];
 
