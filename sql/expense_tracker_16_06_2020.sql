@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 15, 2020 at 05:21 PM
+-- Generation Time: Jun 16, 2020 at 04:04 PM
 -- Server version: 5.7.30-0ubuntu0.18.04.1
--- PHP Version: 7.3.18-1+ubuntu18.04.1+deb.sury.org+1
+-- PHP Version: 7.3.19-1+ubuntu18.04.1+deb.sury.org+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `categories` (
   `id` bigint(11) UNSIGNED NOT NULL,
   `name` varchar(32) NOT NULL,
-  `type` enum('deposit','expense') NOT NULL,
+  `type` varchar(16) NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
   `created_by` int(11) NOT NULL,
@@ -44,14 +44,10 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`, `type`, `parent_id`, `status`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'expense', 'deposit', 0, 9, 1, '2020-06-14 21:18:06', '2020-06-15 17:17:08'),
-(2, 'no name', 'deposit', 0, 9, 1, '2020-06-14 21:18:17', '2020-06-15 17:12:15'),
-(3, 'home-rent', 'deposit', 1, 9, 1, '2020-06-14 21:20:47', '2020-06-15 17:17:33'),
-(4, 'home-rent', 'deposit', 1, 1, 1, '2020-06-14 21:40:33', '2020-06-14 21:40:33'),
-(5, 'home-rent', 'deposit', 1, 1, 1, '2020-06-14 21:40:48', '2020-06-14 21:40:48'),
-(6, 'test cat', 'deposit', 0, 1, 1, '2020-06-15 14:01:04', '2020-06-15 14:01:04'),
-(7, 'test cat', 'deposit', 0, 1, 1, '2020-06-15 14:01:36', '2020-06-15 14:01:36'),
-(8, 'no name', 'deposit', 0, 1, 1, '2020-06-15 17:11:59', '2020-06-15 17:11:59');
+(10, 'home rent', 'expense', 0, 1, 1, '2020-06-16 15:51:39', '2020-06-16 15:51:39'),
+(11, ' net bill', 'expense', 0, 1, 1, '2020-06-16 15:51:54', '2020-06-16 15:51:54'),
+(12, 'test pay', 'pay', 0, 1, 1, '2020-06-16 15:52:14', '2020-06-16 15:52:14'),
+(13, 'test refund', 'refund', 0, 1, 1, '2020-06-16 15:52:37', '2020-06-16 15:52:37');
 
 -- --------------------------------------------------------
 
@@ -62,6 +58,8 @@ INSERT INTO `categories` (`id`, `name`, `type`, `parent_id`, `status`, `created_
 CREATE TABLE `transactions` (
   `id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
+  `month` int(11) NOT NULL,
+  `year` int(11) NOT NULL,
   `amount` float(14,2) NOT NULL,
   `description` text,
   `cause` varchar(32) NOT NULL,
@@ -75,19 +73,10 @@ CREATE TABLE `transactions` (
 -- Dumping data for table `transactions`
 --
 
-INSERT INTO `transactions` (`id`, `category_id`, `amount`, `description`, `cause`, `explanation`, `status`, `created_by`, `created_at`) VALUES
-(1, 3, 10.00, NULL, 'deposit', '10 deposit for home-rent', 1, 1, '2020-06-15 15:39:48'),
-(2, 3, -6.00, NULL, 'expense', '6 Tk expense for home-rent', 1, 1, '2020-06-15 15:40:47'),
-(3, 3, -6.55, NULL, 'expense', '6.555 tk expense for home-rent', 1, 1, '2020-06-15 16:24:03'),
-(4, 3, -6.55, NULL, 'expense', ' number_format(6.555,2) tk expense for home-rent', 1, 1, '2020-06-15 16:25:18'),
-(5, 3, -6.55, NULL, 'expense', ' {number_format(6.555,2)} tk expense for home-rent', 1, 1, '2020-06-15 16:25:48'),
-(6, 3, -6.55, NULL, 'expense', '6.56tk expense for home-rent', 1, 1, '2020-06-15 16:26:23'),
-(7, 3, 6.56, NULL, 'expense', '6.56tk expense for home-rent', 1, 1, '2020-06-15 16:27:02'),
-(8, 3, -6.56, NULL, 'expense', '6.56tk expense for home-rent', 1, 1, '2020-06-15 16:28:00'),
-(9, 3, -6.56, NULL, 'expense', '6.56 tk expense for home-rent', 1, 1, '2020-06-15 16:28:25'),
-(10, 3, -6.56, NULL, 'expense', '6.56 tk expense for home-rent', 1, 1, '2020-06-15 16:31:48'),
-(11, 3, -6.56, NULL, 'expense', '6.56 tk expense for home-rent', 1, 1, '2020-06-15 17:10:18'),
-(12, 3, -6.56, NULL, 'expense', '6.56 tk expense for home-rent', 1, 1, '2020-06-15 17:10:36');
+INSERT INTO `transactions` (`id`, `category_id`, `month`, `year`, `amount`, `description`, `cause`, `explanation`, `status`, `created_by`, `created_at`) VALUES
+(2, 10, 6, 2020, -500.00, '', 'expense', '500.00 tk  for home rent', 1, 1, '2020-06-16 15:55:08'),
+(3, 12, 6, 2020, 100.00, '', 'pay', '100.00 tk  for test pay', 1, 1, '2020-06-16 15:55:38'),
+(5, 13, 6, 2020, 50.00, '', 'refund', '50.00 tk  for test refund', 1, 1, '2020-06-16 15:57:04');
 
 -- --------------------------------------------------------
 
@@ -111,9 +100,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `status`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'Shahriyear', 'admin@admin.com', '$2y$12$85do14U6Thhh7MbAvhpCrugNx/15gqy1bpg6H.VR0d3/ALgNw0Vey', 1, 1, '2020-06-14 15:35:22', '2020-06-14 15:36:37'),
-(2, 'update', 'abc@gmail.com', '$2y$10$8CU7IOCv.RYREhmr1wxq5u54Zgdf0bDo2c9Fv9HhMnF45eOHvx9Oq', 9, 1, '2020-06-15 14:46:04', '2020-06-15 14:49:13'),
-(3, 'test cat', 'admin2@admin.com', '$2y$10$ybJZMMBaMAiBqHJZt9AGtu50UZehfUhdJV2ugsrMwpQZanj5.cCKu', 1, 1, '2020-06-15 14:46:13', '2020-06-15 14:46:13');
+(1, 'Shahriyear', 'admin@admin.com', '$2y$12$85do14U6Thhh7MbAvhpCrugNx/15gqy1bpg6H.VR0d3/ALgNw0Vey', 1, 1, '2020-06-14 15:35:22', '2020-06-14 15:36:37');
 
 --
 -- Indexes for dumped tables
@@ -146,19 +133,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
