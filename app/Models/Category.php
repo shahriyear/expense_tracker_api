@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +16,7 @@ class Category extends Model
 
     const TYPE = [
         'expense' => -1,
-        'pay' => 1,
+        'pay' => -1,
         'refund' => 1
     ];
 
@@ -124,7 +125,7 @@ class Category extends Model
 
     public static function getAll()
     {
-        return Category::where(['status' => self::STATUS['ACTIVE']])->get();
+        return Category::where('status', self::STATUS['ACTIVE'])->get();
     }
 
     public static function getOne($id)

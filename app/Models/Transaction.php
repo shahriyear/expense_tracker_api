@@ -141,7 +141,8 @@ class Transaction extends Model
         $q = DB::table('transactions as t')
             ->leftJoin('users as u', 't.created_by', '=', 'u.id')
             ->select('u.id', 'u.name', DB::raw("SUM(amount) as total"))
-            ->where('cause', $cause);
+            ->where('cause', $cause)
+            ->where('t.status', self::STATUS['ACTIVE']);
 
         if (!is_null($month)) {
             $q->where('month', intval($month));
@@ -159,7 +160,7 @@ class Transaction extends Model
 
     private static function getTotalAmount($month = null, $year = null, $cause = 'expense')
     {
-        $q = Transaction::where('status', 1)->where('cause', $cause);
+        $q = Transaction::where('status', self::STATUS['ACTIVE'])->where('cause', $cause);
 
         if (!is_null($month)) {
             $q->where('month', intval($month));
