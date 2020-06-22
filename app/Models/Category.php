@@ -153,4 +153,13 @@ class Category extends Model
             return false;
         return true;
     }
+
+    public static function checkCategoryInTransaction($category_id)
+    {
+        $cat = Transaction::where('category_id', idDecode($category_id))->first();
+        if (is_null($cat)) {
+            return false;
+        }
+        return true;
+    }
 }

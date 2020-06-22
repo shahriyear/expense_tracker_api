@@ -93,6 +93,10 @@ class CategoryController extends Controller
             return response404('category not found!');
         }
 
+        if ((Category::checkCategoryInTransaction($request->id))) {
+            return response404('category can not delete! its already used in transactions!');
+        }
+
         if (!(Category::doRemove($request->id))) {
             return response500("category failed to delete!");
         }
